@@ -1,0 +1,10 @@
+extends layout
+
+block content
+  - var cars = JSON.parse(data);
+  each car in cars
+    p Owner: #{car.Record.owner}
+    p Car: #{car.Record.make} #{car.Record.model} (#{car.Record.colour})
+    
+  each val, key in car
+    p #{key}: #{val}
