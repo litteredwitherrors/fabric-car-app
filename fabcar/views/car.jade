@@ -5,12 +5,3 @@ block content
   
   each val, key in car
     p #{key}: #{val}
-  
-  form#tableForm(action='/getJson', method='get')
-  select.selectpicker(data-style='btn-info', name='selectpicker')
-    optgroup(label='Select Table')
-      option(name='', value='0') Select table
-      option(name='table1', value='1') Table 1
-      option(name='table2', value='2') Table 2
-      option(name='table3', value='3') Table 3
-  input(type='submit')
