@@ -11,7 +11,7 @@ var channel = {};
 var client = null;
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/cars', function(req, res, next) {
   var data;
   Promise.resolve().then(() => {
       console.log("Create a client and set the wallet location");
@@ -57,9 +57,10 @@ router.get('/', function(req, res, next) {
       }
       console.log(query_responses[0].toString());
 
-      var data = query_responses[0].toString();
+      var responseString = query_responses[0].toString();
 
-      // res.render('index', { data: data });
+      var data = JSON.parse(responseString);
+
       res.setHeader('Content-Type', 'application/json');
       res.json({ data: data });
   }).catch((err) => {
@@ -67,7 +68,7 @@ router.get('/', function(req, res, next) {
   });
 });
 
-router.get('/:car', function(req, res, next) {
+router.get('/cars/:car', function(req, res, next) {
   var data;
   Promise.resolve().then(() => {
       console.log("Create a client and set the wallet location");
