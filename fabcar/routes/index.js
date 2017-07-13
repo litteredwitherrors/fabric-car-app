@@ -61,6 +61,7 @@ router.get('/cars', function(req, res, next) {
 
       var data = JSON.parse(responseString);
 
+
       res.setHeader('Content-Type', 'application/json');
       res.json({ data: data });
   }).catch((err) => {

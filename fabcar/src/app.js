@@ -26,11 +26,6 @@ class Main extends Component {
       <div>
         <h1>Query</h1>
         <SelectBox cars={this.state.cars} />
-        <ul>
-          {this.state.cars.map(car =>
-            <li key={car.Key}>{car.Key}</li>
-          )}
-        </ul>
       </div>
     )
   }
