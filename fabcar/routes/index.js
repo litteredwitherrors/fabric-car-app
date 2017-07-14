@@ -12,23 +12,29 @@ var client = null;
 
 /* GET home page. */
 router.get('/cars', function(req, res, next) {
-  var data;
   Promise.resolve().then(() => {
       console.log("Create a client and set the wallet location");
       client = new hfc();
       return hfc.newDefaultKeyValueStore({ path: options.wallet_path });
+
+
   }).then((wallet) => {
       console.log("Set wallet path, and associate user ", options.user_id, " with application");
       client.setStateStore(wallet);
       return client.getUserContext(options.user_id, true);
+
+
   }).then((user) => {
       console.log("Check user is enrolled, and set a query URL in the network");
       if (user === undefined || user.isEnrolled() === false) {
           console.error("User not defined, or not enrolled - error");
       }
+
       channel = client.newChannel(options.channel_id);
       channel.addPeer(client.newPeer(options.network_url));
       return;
+
+
   }).then(() => {
       console.log("Make query");
       var transaction_id = client.newTransactionID();
@@ -45,6 +51,8 @@ router.get('/cars', function(req, res, next) {
 
       // console.log("Query is:" + req.query.car);
       return channel.queryByChaincode(request);
+
+
   }).then((query_responses) => {
       console.log("returned from query");
       if (!query_responses.length) {
@@ -64,13 +72,14 @@ router.get('/cars', function(req, res, next) {
 
       res.setHeader('Content-Type', 'application/json');
       res.json({ data: data });
+
+
   }).catch((err) => {
       console.error("Caught Error", err);
   });
 });
 
 router.get('/cars/:car', function(req, res, next) {
-  var data;
   Promise.resolve().then(() => {
       console.log("Create a client and set the wallet location");
       client = new hfc();
@@ -79,6 +88,8 @@ router.get('/cars/:car', function(req, res, next) {
       console.log("Set wallet path, and associate user ", options.user_id, " with application");
       client.setStateStore(wallet);
       return client.getUserContext(options.user_id, true);
+
+      
   }).then((user) => {
       console.log("Check user is enrolled, and set a query URL in the network");
       if (user === undefined || user.isEnrolled() === false) {
@@ -87,6 +98,8 @@ router.get('/cars/:car', function(req, res, next) {
       channel = client.newChannel(options.channel_id);
       channel.addPeer(client.newPeer(options.network_url));
       return;
+
+
   }).then(() => {
       console.log("Make query");
       var transaction_id = client.newTransactionID();
@@ -104,6 +117,8 @@ router.get('/cars/:car', function(req, res, next) {
       console.log('QUERY' + req.params.car)
 
       return channel.queryByChaincode(request);
+
+
   }).then((query_responses) => {
       console.log("returned from query");
       if (!query_responses.length) {
@@ -116,11 +131,12 @@ router.get('/cars/:car', function(req, res, next) {
       }
       console.log(query_responses[0].toString());
 
-      var data = query_responses[0].toString();
+      var responseString = query_responses[0].toString();
+
+      var data = JSON.parse(responseString);
 
       res.setHeader('Content-Type', 'application/json');
       res.json(data);
-      // res.render('index', { data: data });
   }).catch((err) => {
       console.error("Caught Error", err);
   });
