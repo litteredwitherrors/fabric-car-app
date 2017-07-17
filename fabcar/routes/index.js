@@ -15,95 +15,94 @@
 
 //This promise initializes HFC and configures the wallet
 Promise.resolve().then(() => {
-    console.log("Create a client and set the wallet location");
-    client = new hfc();
-    return hfc.newDefaultKeyValueStore({ path: options.wallet_path });
+  console.log("Create a client and set the wallet location");
+  client = new hfc();
+  return hfc.newDefaultKeyValueStore({ path: options.wallet_path });
 }).then((wallet) => {
-    console.log("Set wallet path, and associate user ", options.user_id, " with application");
-    client.setStateStore(wallet);
-    return client.getUserContext(options.user_id, true);
+  console.log("Set wallet path, and associate user ", options.user_id, " with application");
+  client.setStateStore(wallet);
+  return client.getUserContext(options.user_id, true);
 }).then((user) => {
-    console.log("Check user is enrolled, and set a query URL in the network");
-    if (user === undefined || user.isEnrolled() === false) {
-        console.error("User not defined, or not enrolled - error");
-    }
-    channel = client.newChannel(options.channel_id);
-    var peerObj = client.newPeer(options.peer_url);
-    channel.addPeer(peerObj);
-    channel.addOrderer(client.newOrderer(options.orderer_url));
-    targets.push(peerObj);
-    return;
+  console.log("Check user is enrolled, and set a query URL in the network");
+  if (user === undefined || user.isEnrolled() === false) {
+    console.error("User not defined, or not enrolled - error");
+  }
+  channel = client.newChannel(options.channel_id);
+  var peerObj = client.newPeer(options.peer_url);
+  channel.addPeer(peerObj);
+  channel.addOrderer(client.newOrderer(options.orderer_url));
+  targets.push(peerObj);
+  return;
 });
 
 router.get('/cars', function(req, res, next) {
   Promise.resolve().then(() => {
-      console.log("Make query");
-      var transaction_id = client.newTransactionID();
-      console.log("Assigning transaction_id: ", transaction_id._transaction_id);
+    console.log("Make query");
+    var transaction_id = client.newTransactionID();
+    console.log("Assigning transaction_id: ", transaction_id._transaction_id);
 
-      // queryCar - requires 1 argument, ex: args: ['CAR4'],
-      // queryAllCars - requires no arguments , ex: args: [''],
-      const request = {
-        chaincodeId: options.chaincode_id,
-        txId: transaction_id,
-        fcn: 'queryAllCars',
-        args: ['']
-      };
-      // console.log("Query is:" + req.query.car);
-      return channel.queryByChaincode(request);
+    // queryCar - requires 1 argument, ex: args: ['CAR4'],
+    // queryAllCars - requires no arguments , ex: args: [''],
+    const request = {
+      chaincodeId: options.chaincode_id,
+      txId: transaction_id,
+      fcn: 'queryAllCars',
+      args: ['']
+    };
+    // console.log("Query is:" + req.query.car);
+    return channel.queryByChaincode(request);
   }).then((query_responses) => {
-      console.log("returned from query");
-      if (!query_responses.length) {
-          console.log("No payloads were returned from query");
-      } else {
-          console.log("Query result count = ", query_responses.length)
-      }
-      if (query_responses[0] instanceof Error) {
-          console.error("error from query = ", query_responses[0]);
-      }
-      console.log(query_responses[0].toString());
-      var responseString = query_responses[0].toString();
-      var data = JSON.parse(responseString);
-      res.setHeader('Content-Type', 'application/json');
-      res.json({ data: data });
+    console.log("returned from query");
+    if (!query_responses.length) {
+      console.log("No payloads were returned from query");
+    } else {
+      console.log("Query result count = ", query_responses.length)
+    }
+    if (query_responses[0] instanceof Error) {
+      console.error("error from query = ", query_responses[0]);
+    }
+    console.log(query_responses[0].toString());
+    var responseString = query_responses[0].toString();
+    var data = JSON.parse(responseString);
+    res.setHeader('Content-Type', 'application/json');
+    res.json({ data: data });
   }).catch((err) => {
-      console.error("Caught Error", err);
+    console.error("Caught Error", err);
   });
 });
 
 router.get('/cars/:car', function(req, res, next) {
   Promise.resolve().then(() => {
-      console.log("Make query");
-      var transaction_id = client.newTransactionID();
-      console.log("Assigning transaction_id: ", transaction_id._transaction_id);
-
-      // queryCar - requires 1 argument, ex: args: ['CAR4'],
-      // queryAllCars - requires no arguments , ex: args: [''],
-      const request = {
-          chaincodeId: options.chaincode_id,
-          txId: transaction_id,
-          fcn: 'queryCar',
-          args: [req.params.car]
-      };
-      console.log('QUERY' + req.params.car)
-      return channel.queryByChaincode(request);
+    console.log("Make query");
+    var transaction_id = client.newTransactionID();
+    console.log("Assigning transaction_id: ", transaction_id._transaction_id);
+    // queryCar - requires 1 argument, ex: args: ['CAR4'],
+    // queryAllCars - requires no arguments , ex: args: [''],
+    const request = {
+      chaincodeId: options.chaincode_id,
+      txId: transaction_id,
+      fcn: 'queryCar',
+      args: [req.params.car]
+    };
+    console.log('QUERY' + req.params.car)
+    return channel.queryByChaincode(request);
   }).then((query_responses) => {
-      console.log("returned from query");
-      if (!query_responses.length) {
-          console.log("No payloads were returned from query");
-      } else {
-          console.log("Query result count = ", query_responses.length)
-      }
-      if (query_responses[0] instanceof Error) {
-          console.error("error from query = ", query_responses[0]);
-      }
-      console.log(query_responses[0].toString());
-      var responseString = query_responses[0].toString();
-      var data = JSON.parse(responseString);
-      res.setHeader('Content-Type', 'application/json');
-      res.json(data);
+    console.log("returned from query");
+    if (!query_responses.length) {
+      console.log("No payloads were returned from query");
+    } else {
+      console.log("Query result count = ", query_responses.length)
+    }
+    if (query_responses[0] instanceof Error) {
+      console.error("error from query = ", query_responses[0]);
+    }
+    console.log(query_responses[0].toString());
+    var responseString = query_responses[0].toString();
+    var data = JSON.parse(responseString);
+    res.setHeader('Content-Type', 'application/json');
+    res.json(data);
   }).catch((err) => {
-      console.error("Caught Error", err);
+    console.error("Caught Error", err);
   });
 });
 
@@ -177,14 +176,14 @@ router.post('/cars/', function(req, res, next) {
           eh.disconnect();
 
           if (code !== 'VALID') {
-             console.error(
-                 'The transaction was invalid, code = ' + code);
-             reject();
+            console.error(
+             'The transaction was invalid, code = ' + code);
+            reject();
           } else {
-             console.log(
-                 'The transaction has been committed on peer ' +
-                 eh._ep._endpoint.addr);
-             resolve();
+            console.log(
+             'The transaction has been committed on peer ' +
+             eh._ep._endpoint.addr);
+            resolve();
           }
         });
       });
@@ -196,7 +195,7 @@ router.post('/cars/', function(req, res, next) {
         return results[0]; // the first returned value is from the 'sendPromise' which is from the 'sendTransaction()' call
       }).catch((err) => {
         console.error(
-           'Failed to send transaction and get notifications within the timeout period.'
+          'Failed to send transaction and get notifications within the timeout period.'
         );
         return 'Failed to send transaction and get notifications within the timeout period.';
       });
@@ -207,45 +206,48 @@ router.post('/cars/', function(req, res, next) {
        return 'Failed to send Proposal or receive valid response. Response null or status is not 200. exiting...';
     }
   }, (err) => {
-     console.error('Failed to send proposal due to error: ' + err.stack ? err.stack :
-         err);
-     return 'Failed to send proposal due to error: ' + err.stack ? err.stack :
-         err;
-
-
+    var prop_error = err.stack ? err.stack : err
+    console.error('Failed to send proposal due to error: ' + prop_error );
+    return 'Failed to send proposal due to error: ' + prop_error;
   }).then((response) => {
      if (response.status === 'SUCCESS') {
-         console.log('Successfully sent transaction to the orderer.');
-         return tx_id.getTransactionID();
+        console.log('Successfully sent transaction to the orderer.');
+        return tx_id.getTransactionID();
      } else {
-         console.error('Failed to order the transaction. Error code: ' + response.status);
-         return 'Failed to order the transaction. Error code: ' + response.status;
+        console.error('Failed to order the transaction. Error code: ' + response.status);
+        return 'Failed to order the transaction. Error code: ' + response.status;
      }
   }, (err) => {
-     console.error('Failed to send transaction due to error: ' + err.stack ? err
-         .stack : err);
-     return 'Failed to send transaction due to error: ' + err.stack ? err.stack :
-         err;
+    var trans_error = err.stack ? err.stack : err
+    console.error('Failed to send transaction due to error: ' + trans_error);
+    return 'Failed to send transaction due to error: ' + trans_error;
   });
 });
 
-router.put('/cars/:owners', function(req, res, next) {
- Promise.resolve().then(() => {
-     tx_id = client.newTransactionID();
-     console.log("Assigning transaction_id: ", tx_id._transaction_id);
-     // createCar - requires 5 args, ex: args: ['CAR11', 'Honda', 'Accord', 'Black', 'Tom'],
-     // changeCarOwner - requires 2 args , ex: args: ['CAR10', 'Barry'],
-     // send proposal to endorser
-     var request = {
-         targets: targets,
-         chaincodeId: options.chaincode_id,
-         fcn: 'changeCarOwner',
-         args: ['CAR10', 'Barry'],
-         chainId: options.channel_id,
-         txId: tx_id
-     };
-     return channel.sendTransactionProposal(request);
- }).then((results) => {
+router.put('/cars/', function(req, res, next) {
+  var request_data = req.body.data
+  var carId = request_data.carId;
+  var recipient = request_data.recipient;
+
+  console.log([carId, recipient]);
+  console.log(request_data)
+  console.log(typeof request_data);
+  Promise.resolve().then(() => {
+    tx_id = client.newTransactionID();
+    console.log("Assigning transaction_id: ", tx_id._transaction_id);
+    // createCar - requires 5 args, ex: args: ['CAR11', 'Honda', 'Accord', 'Black', 'Tom'],
+    // changeCarOwner - requires 2 args , ex: args: ['CAR10', 'Barry'],
+    // send proposal to endorser
+    var request = {
+      targets: targets,
+      chaincodeId: options.chaincode_id,
+      fcn: 'changeCarOwner',
+      args: [carId, recipient],
+      chainId: options.channel_id,
+      txId: tx_id
+    };
+    return channel.sendTransactionProposal(request);
+  }).then((results) => {
      var proposalResponses = results[0];
      var proposal = results[1];
      var header = results[2];
@@ -316,14 +318,11 @@ router.put('/cars/:owners', function(req, res, next) {
          );
          return 'Failed to send Proposal or receive valid response. Response null or status is not 200. exiting...';
      }
- }, (err) => {
-     console.error('Failed to send proposal due to error: ' + err.stack ? err.stack :
-         err);
-     return 'Failed to send proposal due to error: ' + err.stack ? err.stack :
-         err;
-
-
- }).then((response) => {
+  }, (err) => {
+    var prop_error = err.stack ? err.stack : err
+    console.error('Failed to send proposal due to error: ' + prop_error );
+    return 'Failed to send proposal due to error: ' + prop_error;
+  }).then((response) => {
      if (response.status === 'SUCCESS') {
          console.log('Successfully sent transaction to the orderer.');
          return tx_id.getTransactionID();
@@ -331,12 +330,11 @@ router.put('/cars/:owners', function(req, res, next) {
          console.error('Failed to order the transaction. Error code: ' + response.status);
          return 'Failed to order the transaction. Error code: ' + response.status;
      }
- }, (err) => {
-     console.error('Failed to send transaction due to error: ' + err.stack ? err
-         .stack : err);
-     return 'Failed to send transaction due to error: ' + err.stack ? err.stack :
-         err;
- });
+  }, (err) => {
+    var trans_error = err.stack ? err.stack : err
+    console.error('Failed to send transaction due to error: ' + trans_error);
+    return 'Failed to send transaction due to error: ' + trans_error;
+  });
 });
 
 module.exports = router;
