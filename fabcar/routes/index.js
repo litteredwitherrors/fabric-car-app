@@ -2,16 +2,16 @@
 /*
  * Hyperledger Fabric Sample Query Program
  */
- var express = require('express');
- var router = express.Router();
- var hfc = require('fabric-client');
- var path = require('path');
- var util = require('util');
- var options = require('./options');
- var channel = {};
- var client = null;
- var targets = [];
- var tx_id = null;
+var express = require('express');
+var router = express.Router();
+var hfc = require('fabric-client');
+var path = require('path');
+var util = require('util');
+var options = require('./options');
+var channel = {};
+var client = null;
+var targets = [];
+var tx_id = null;
 
 //This promise initializes HFC and configures the wallet
 Promise.resolve().then(() => {
