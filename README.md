@@ -1,5 +1,5 @@
 # Hyperledger Fabric Demo Car App
-This demo is a WIP. This project is based on the Write your First Hyperledger App Documentation found [here]('http://hyperledger-fabric.readthedocs.io/en/latest/write_first_app.html'). We use Express.js to turn the Fabric Node SDK into a RESTful API that is used in conjunction with the included React.js client.
+This demo is a WIP. This project is based on the Write your First Hyperledger App Documentation found [here](http://hyperledger-fabric.readthedocs.io/en/latest/write_first_app.html). We use Express.js to turn the Fabric Node SDK into a RESTful API that is used in conjunction with the included React.js client.
 
 ## Install dependencies
 
