@@ -3,7 +3,7 @@ This demo is a WIP. This project is based on the Write your First Hyperledger Ap
 
 ## Install dependencies
 
-```
+ ```
 
 $ npm install
 
@@ -30,6 +30,14 @@ $ npm run build
 ```
 
 $ npm start
+
+```
+
+The app will be running at:
+
+```
+
+http://localhost:3000
 
 ```
 
